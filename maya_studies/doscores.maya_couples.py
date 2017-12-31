@@ -10,8 +10,8 @@ with open("concreteness.csv", "r") as f:  # change name of file and put in here
     for row in reader:
         conc_dict[row[0]] = float(row[2])
 
-with open("SR_Couples_Prime_1_1881210.csv", "r") as f:
-    with open("scores_prime", "w") as g:
+with open("SR_Couples_Prime_1_1881210.csv", "r", encoding="latin1") as f:
+    with open("scores_prime.csv", "w") as g:
         reader = csv.reader(f, quotechar='"')
         writer = csv.writer(g, lineterminator = '\n')
         writer.writerow(["id", "msg_sum", "msg_avg", "rec_sum", "rec_avg", "msg_word_count", "rec_word_count"])
@@ -22,7 +22,6 @@ with open("SR_Couples_Prime_1_1881210.csv", "r") as f:
             message = row[1].split()
             recall = row[2].split()
             to_write = [id_]
-
             # If a value is missing in a cell, skip this ro
             if message == [] or recall == []:
                 writer.writerow(["Message or Recall is empty"])
@@ -30,10 +29,18 @@ with open("SR_Couples_Prime_1_1881210.csv", "r") as f:
 
             msg_sum = 0
             msg_word_count = 0
-            for i in range(0, len(message) - 1):
+            length = len(message)
+
+            for i in range(0, length):
                 word1 = re.sub("[\.,-/\\?!;: ]", "", message[i]).lower()
-                word2 = re.sub("[\.,-/\\?!;: ]", "", message[i + 1]).lower()
-                phrase = word1 + " " + word2
+
+                # If i+1 is a valid index...
+                if i + 1 <= length - 1:
+                    word2 = re.sub("[\.,-/\\?!;: ]", "", message[i + 1]).lower()
+                    phrase = word1 + " " + word2
+                else:
+                    phrase = word1
+
 
                 if phrase in conc_dict:
                     msg_sum += conc_dict[phrase]
@@ -47,7 +54,10 @@ with open("SR_Couples_Prime_1_1881210.csv", "r") as f:
                         msg_word_count += 1
 
             to_write.append(str(msg_sum))
-            to_write.append(str(msg_sum/float(msg_word_count)))
+            if msg_word_count != 0:
+                to_write.append(str(msg_sum/float(msg_word_count)))
+            else:
+                to_write.append("")
 
             rec_sum = 0
             rec_word_count = 0
@@ -66,7 +76,10 @@ with open("SR_Couples_Prime_1_1881210.csv", "r") as f:
                         rec_sum += conc_dict[word2]
                         rec_word_count += 1
             to_write.append(str(rec_sum))
-            to_write.append(str(rec_sum/float(rec_word_count)))
+            if rec_word_count != 0:
+                to_write.append(str(rec_sum/float(rec_word_count)))
+            else:
+                to_write.append("")
             to_write.append(str(msg_word_count))
             to_write.append(str(rec_word_count))
             writer.writerow(to_write)
