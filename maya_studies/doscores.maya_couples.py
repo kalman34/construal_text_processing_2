@@ -11,9 +11,9 @@ with open("concreteness.csv", "r") as f:  # change name of file and put in here
         conc_dict[row[0]] = float(row[2])
 
 with open("SR_Couples_Prime_1_1881210.csv", "r", encoding="latin1") as f:
-    with open("scores_prime.csv", "w") as g:
+    with open("scores_prime_test.csv", "w") as g:
         reader = csv.reader(f, quotechar='"')
-        writer = csv.writer(g, lineterminator = '\n')
+        writer = csv.writer(g, lineterminator='\n')
         writer.writerow(["id", "msg_sum", "msg_avg", "rec_sum", "rec_avg", "msg_word_count", "rec_word_count"])
         reader.__next__()
         for row in reader:
@@ -41,7 +41,6 @@ with open("SR_Couples_Prime_1_1881210.csv", "r", encoding="latin1") as f:
                 else:
                     phrase = word1
 
-
                 if phrase in conc_dict:
                     msg_sum += conc_dict[phrase]
                     msg_word_count += 1
@@ -55,7 +54,7 @@ with open("SR_Couples_Prime_1_1881210.csv", "r", encoding="latin1") as f:
 
             to_write.append(str(msg_sum))
             if msg_word_count != 0:
-                to_write.append(str(msg_sum/float(msg_word_count)))
+                to_write.append(str(msg_sum / float(msg_word_count)))
             else:
                 to_write.append("")
 
@@ -77,7 +76,7 @@ with open("SR_Couples_Prime_1_1881210.csv", "r", encoding="latin1") as f:
                         rec_word_count += 1
             to_write.append(str(rec_sum))
             if rec_word_count != 0:
-                to_write.append(str(rec_sum/float(rec_word_count)))
+                to_write.append(str(rec_sum / float(rec_word_count)))
             else:
                 to_write.append("")
             to_write.append(str(msg_word_count))
